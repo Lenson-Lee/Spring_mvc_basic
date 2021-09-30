@@ -24,5 +24,4 @@ public class MvcApplication {
 		SpringApplication.run(MvcApplication.class, args);
 	}
 
-
 }
