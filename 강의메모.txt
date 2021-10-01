@@ -1,5 +1,6 @@
 ctr shift E 최근파일
 커서에 ctr shift T => ctrl 클릭
+메서드로 빼고싶은 코드들 블럭 => ctrl alt M
 
 스프링은 기본적으로 톰캣이 내장되어있다
 스프링 웹 새 프로젝트 spring.io
@@ -89,3 +90,5 @@ JSTL
 <c:forEach>: JSTL의 for문
 
 <a href=""> 은 Get요청이다 POST안됨.
+
+service 패키지: 컨트롤러와 레파지토리 사이에서 잡일을 맡는 패키지(ex: 평균구하기)
