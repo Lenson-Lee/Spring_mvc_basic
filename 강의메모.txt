@@ -2,6 +2,8 @@ ctr shift E 최근파일
 커서에 ctr shift T => ctrl 클릭
 메서드로 빼고싶은 코드들 블럭 => ctrl alt M
 
+리드미에서 groovy라고 적힌 부분들은 build.gradle에 넣는거다.
+
 스프링은 기본적으로 톰캣이 내장되어있다
 스프링 웹 새 프로젝트 spring.io
 Gradle/java/2.5.5/war/8
@@ -92,3 +94,21 @@ JSTL
 <a href=""> 은 Get요청이다 POST안됨.
 
 service 패키지: 컨트롤러와 레파지토리 사이에서 잡일을 맡는 패키지(ex: 평균구하기)
+
+데이터베이스 스프링 없이 연결하면 코드 열 줄 이상 쓰는데 이거 은근 코테에서 많이 함(DBConnectTest 참조)
+실무에서는 Spring JDBC/MyBatis 자주 쓰고 /굴지의 대기업은 Hibernate(배워두면 편하다 SQL 안써도 되지만 알아야 쓸 수 있다.)
+추후에 JPA 배우면?
+
+=====================================
+
+
+데이터베이스 연동
+
+JDBC(java, db, c?)
+C:\oraclexe\app\oracle\product\11.2.0\server\jdbc\lib
+6.jar 파일 복사 > 작업중이던 mvp의 WEB-INF에 새 폴더 lib(초록색) 만든 후 붙여넣기
+?? : 라이브러리인데 왜 직접 폴더생성하고 붙여넣기를 gardle 사용 안하고 수동으로 하지? -> 오라클11버전은 그레이들 라이센스 끊음 ㅋㅋ 회사 가면 11 안쓰니 걱정하지말기..
+
+//DB 주소(회사마다 url 패턴이 있다. 구글에 oracle jdbc url 검색 후 웬만하면 공식문서 보고 이해 안가면 설명 블로그 보기)
+
+보통 sql 에서 pk는 순차적인 숫자 1,2 ,3,4,5.. 를 씀(게시판 번호)
