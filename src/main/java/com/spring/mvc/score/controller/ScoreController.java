@@ -7,16 +7,20 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
+import static java.awt.SystemColor.info;
+
 @Controller
 @Log4j2 //로그 출력을 도와주는 기능 sout 대신 log.info 사용
-@RequiredArgsConstructor    //final 필드를 초기화하는 생성자를 자동으로 생성해준다 (밑에 주석한 @Autowired 문을 생략할 수 있게 된다.)
+//@RequiredArgsConstructor    //final 필드를 초기화하는 생성자를 자동으로 생성해준다 (밑에 주석한 @Autowired 문을 생략할 수 있게 된다.)
 public class ScoreController {
 
     private final ScoreRepository scoreRepository;    //객체가 없으니 생성자를 주입해야한다. alt insert 생성자. final: 무조건 레파지토리가 있어야 한다고 인식하게 되어서 생략 가능(밑의 @Auto)
@@ -27,6 +31,12 @@ public class ScoreController {
 //    public ScoreController(ScoreRepository scoreRepository) {
 //        this.scoreRepository = scoreRepository;
 //    }
+
+    @Autowired
+    public ScoreController(@Qualifier("jr") ScoreRepository scoreRepository, ScoreService scoreService) {
+        this.scoreRepository = scoreRepository;
+        this.scoreService = scoreService;
+    }
 
     //점수 프로그램 화면 요청
     @GetMapping("/score/list") //<a href = "">태그는 전부 get 이다.
@@ -61,4 +71,14 @@ public class ScoreController {
         return "redirect:/score/list";
     }
 
+    //점수 상세보기 요청
+    @GetMapping("score/detail")
+    String detail(@RequestParam("stuNum") int sn, Model model) {
+        log.info("/score/detail GET: " + sn);
+        Score score = scoreRepository.findOne(sn);
+        model.addAttribute("score", score);
+
+
+        return "score/detail";
+    }
 }

@@ -51,12 +51,13 @@ public InternalResourceViewResolver viewResolver() {
 2. 데이터베이스 설정
 - C:\oraclexe\app\oracle\product\11.2.0\server\jdbc\lib 에서 ojbc6.jar
 - 아래 설정 경로 /WEB-INF/lib에 추가하기
+- 라이브러리인데 왜 직접 폴더생성하고 붙여넣기를 gardle 사용 안하고 수동으로 하지? -> 오라클11버전은 그레이들 라이센스 끊음 ㅋㅋ 회사 가면 11 안쓰니 걱정하지말기..
 ```groovy
 //database 관련 라이브러리 추가
-//jdbc 라이브러리
-compile "org.springframework.boot:spring-boot-starter-jdbc"
+//jdbc 라이브러리 >> gradle에 넣는 순간 오류> 하단의 데이터소스 정보 넣어줘야함.
+implementation "org.springframework.boot:spring-boot-starter-jdbc"
 //오라클 라이브러리 (11g edition - gradle, maven 라이센스 문제 공식 지원 불가)
-compile fileTree(dir: '/src/main/webapp/WEB-INF/lib', include: ['*.jar'])
+implementation fileTree(dir: '/src/main/webapp/WEB-INF/lib', include: ['*.jar'])
 ```
 
 - 스프링에게 DataSource정보 알려주기 (Hikari DataSource)

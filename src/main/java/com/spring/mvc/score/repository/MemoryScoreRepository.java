@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 //메모리에 성적 정보들을 모아서 저장해야 한다.
-@Repository //스프링에 저장소 빈으로 등록 + @Component 혹은 Repository(좀 더 저장소의 의미가 명확하다)
+@Repository("mr") //스프링에 저장소 빈으로 등록 + @Component 혹은 Repository(좀 더 저장소의 의미가 명확하다)
 @Log4j2
 public class MemoryScoreRepository implements ScoreRepository { //빨간줄 뜨면 메서드 구현 해야한다.
 
@@ -44,7 +44,7 @@ public class MemoryScoreRepository implements ScoreRepository { //빨간줄 뜨�
 
     @Override
     public Score findOne(int stuNum) {
-        return null;
+        return scoreMap.get(stuNum);
     }
 
     @Override

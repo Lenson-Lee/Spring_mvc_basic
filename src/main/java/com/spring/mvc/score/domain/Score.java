@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 @Setter @Getter @ToString
 //@AllArgsConstructor 는 외부에서 매개변수 7개를 전부 쓴다는 뜻인데 현실에서는 클라이언트에서 4개만 오기 때문에 쓸 수 없고
 //현실에서는 클라이언트에서 4개만 오기 때문에 쓸 수 없고 수동으로 생성자를 만들어 쓰기.
@@ -25,6 +28,16 @@ public class Score {
     public Score() {
         this.stuNum = ++seq;
 
+    }
+
+    public Score(ResultSet rs) throws SQLException {
+        this.stuNum = rs.getInt("stu_num");
+        this.name = rs.getString("stu_name");
+        this.kor = rs.getInt("kor");
+        this.eng = rs.getInt("eng");
+        this.math = rs.getInt("math");
+        this.total = rs.getInt("total");//컬럼명을쓰는거다!
+        this.average = rs.getDouble("average");
     }
 
     public void calcTotal() {
