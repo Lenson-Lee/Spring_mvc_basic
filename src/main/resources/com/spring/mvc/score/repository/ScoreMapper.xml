@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace 속성에는 사용할 인터페이스의 풀 경로를 적는다. -->
+<mapper namespace="com.spring.mvc.score.repository.ScoreMapper">
+
+    <!--  인터페이스의 추상메서드들의 SQL문장을 적음 , #{자바 필드명 적는다객체가 들어오면 객체, STRING, Int 들어오면 그냥 변수명 . sql 컬럼명 아님!!} -->
+    <!--    WHERE sql컬럼명 = #{자바 필드명} -->
+    <insert id="save">
+        INSERT INTO SCORE
+        VALUES
+        (seq_score.nextval, #{name}, #{kor}, #{eng}, #{math}, #{total}, #{average})
+    </insert>
+
+    <delete id="remove">
+        DELETE FROM score WHERE stu_num = ${stuNum}
+    </delete>
+
+    <!--
+        SELECT문 처리 결과를 자바 클래스 인스턴스객체에 매핑하는 추가작업이 필요합니다.  => resultMap
+        resultMap: 자바의 필드명과 테이블의 컬럼명이 다른 경우를 대비하여 매칭하는 작업을 수행한다.
+            자바는 카멜케이스, sql은 스네이크 케이스가 관례여서..
+    -->
+
+    <!--  id 에는 맵의 이름을 지어주고(자율적으로 변경 가능) type 에는 도메인 클래스의 풀경로를 적음 -->
+    <resultMap id="scoreMap" type="com.spring.mvc.score.domain.Score">
+        <!--    필드명과 컬럼명이 다른 것들만 기술,
+        property 에는 자바필드명, column 에는 DB 컬럼명    -->
+        <result property="stuNum" column="stu_num"/>
+        <result property="name" column="stu_name"/>
+    </resultMap>
+    <!--  전체조회  -->
+    <select id="findAll" resultMap="scoreMap">
+        SELECT * FROM score
+    </select>
+    <!--  개별 조회  -->
+    <select id="findOne" resultMap="scoreMap">
+        SELECT * FROM score WHERE stu_num = #{stuNum}
+    </select>
+</mapper>

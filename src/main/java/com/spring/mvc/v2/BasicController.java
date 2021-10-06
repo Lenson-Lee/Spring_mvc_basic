@@ -53,11 +53,13 @@ public class BasicController {
         return "";
     }
 
-    //parseInt 없이 하는법
-    //파라미터에 원하는 형을 적으면 된다. 주의할 점은 input tupe의 name을 써야 한다.
-    //원하는 이름으로 입력하고 싶을 시에는 @RequestParam("input tupe의 name") String 원하는이름) 처럼 쓴다.
-    //@PostMapping: 주소창에 입력정보 숨기기. HTML form에 method = "POST" 추가
-    //checkbox의 경우 배열(대신 List 사용이 편하다) 로 받는다. @RequestParam("hobbys")ArrayList<String> hobbys)
+    /*
+    parseInt 없이 하는법
+    파라미터에 원하는 형을 적으면 된다. 주의할 점은 input tupe의 name을 써야 한다.
+    원하는 이름으로 입력하고 싶을 시에는 @RequestParam("input tupe의 name") String 원하는이름) 처럼 쓴다.
+    @PostMapping: 주소창에 입력정보 숨기기. HTML form에 method = "POST" 추가
+    checkbox의 경우 배열(대신 List 사용이 편하다) 로 받는다. @RequestParam("hobbys")ArrayList<String> hobbys)
+    */
 
     @PostMapping("/basic/join2")
     public String join(@RequestParam("userId") String id, String userPw, String userName,int userAge,

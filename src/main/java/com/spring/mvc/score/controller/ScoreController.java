@@ -1,10 +1,9 @@
 package com.spring.mvc.score.controller;
 
 import com.spring.mvc.score.domain.Score;
+import com.spring.mvc.score.repository.ScoreMapper;
 import com.spring.mvc.score.repository.ScoreRepository;
 import com.spring.mvc.score.service.ScoreService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -16,8 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-import static java.awt.SystemColor.info;
-
 @Controller
 @Log4j2 //로그 출력을 도와주는 기능 sout 대신 log.info 사용
 //@RequiredArgsConstructor    //final 필드를 초기화하는 생성자를 자동으로 생성해준다 (밑에 주석한 @Autowired 문을 생략할 수 있게 된다.)
@@ -25,23 +22,25 @@ public class ScoreController {
 
     private final ScoreRepository scoreRepository;    //객체가 없으니 생성자를 주입해야한다. alt insert 생성자. final: 무조건 레파지토리가 있어야 한다고 인식하게 되어서 생략 가능(밑의 @Auto)
                                                     //스프링이 실행시점에 자동으로 만들어준다. 객체에 대한 정보가 미리 기존에 등록이 되어있어야 사용이 가능하다. @Component(MemoryScoreRepository에 넣었음)
-
     private final ScoreService scoreService;
 //    @Autowired  //스프링에게 스코어컨트롤러에서 스코어레파지토리를 직접 만들지 않고 자동으로 넣어(위임)해달라고 요청, final시에 자동으로 인식되어 생략 가능. @RequiredArgsConstructor
 //    public ScoreController(ScoreRepository scoreRepository) {
 //        this.scoreRepository = scoreRepository;
 //    }
+    private final ScoreMapper scoreMapper;  //앞으로 레파지토리 안쓰고 마이바티스 쓰겠다는 뜻. 생성자매개변수 추가로 오류 해결
 
     @Autowired
-    public ScoreController(@Qualifier("jr") ScoreRepository scoreRepository, ScoreService scoreService) {
+    public ScoreController(@Qualifier("jr") ScoreRepository scoreRepository, ScoreService scoreService, ScoreMapper scoreMapper) {
+        //this.scoreRepository = scoreRepository;
         this.scoreRepository = scoreRepository;
         this.scoreService = scoreService;
+        this.scoreMapper = scoreMapper;
     }
 
     //점수 프로그램 화면 요청
     @GetMapping("/score/list") //<a href = "">태그는 전부 get 이다.
     public String scoreList(Model model) {
-        List<Score> scores = scoreRepository.findAll();
+        List<Score> scores = scoreMapper.findAll();
         model.addAttribute("scoreList", scores);
         return "score/score-list";
     }
@@ -67,7 +66,7 @@ public class ScoreController {
     @GetMapping("/score/delete")
     public String delete(int stuNum) {
         log.info("점수 삭제 요청! - ");
-        scoreRepository.remove(stuNum);
+        scoreMapper.remove(stuNum);
         return "redirect:/score/list";
     }
 
@@ -75,10 +74,11 @@ public class ScoreController {
     @GetMapping("score/detail")
     String detail(@RequestParam("stuNum") int sn, Model model) {
         log.info("/score/detail GET: " + sn);
-        Score score = scoreRepository.findOne(sn);
+        Score score = scoreMapper.findOne(sn);
         model.addAttribute("score", score);
-
 
         return "score/detail";
     }
+
+
 }

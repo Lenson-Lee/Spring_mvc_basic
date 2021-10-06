@@ -112,3 +112,55 @@ C:\oraclexe\app\oracle\product\11.2.0\server\jdbc\lib
 //DB 주소(회사마다 url 패턴이 있다. 구글에 oracle jdbc url 검색 후 웬만하면 공식문서 보고 이해 안가면 설명 블로그 보기)
 
 보통 sql 에서 pk는 순차적인 숫자 1,2 ,3,4,5.. 를 씀(게시판 번호)
+
+
+
+=======================================
+
+
+
+(ScoreController파일) 스프링 없는 원초적인 코드의 단점
+
+단점: 정보(이름,아이디,비번)이 코드에 들어간다.
+SQL문을 넣어 가독성이 낮고, 메서드마다 중복되는 코드가 많다. (복붙왕)
+
+실제로 우리가 한 건 SQL을 쓰고 실행을 위해 값을 채우기만 하는데 쓸데없는 부분이 많았지만 스프링을 쓰면 간단해진다.
+
+
+##찐 실무
+
+maven repository 에서 mybatis spring  검색, gradle 빌더 복사해서 빌더파일에 넣기
+.(메이븐 아직도 즐찾 안했을까?)
+2.1.0 써보겠음
+
+** 마이바티스 쓰려면 config 폴더의 DataBaseConfig 파일 있어야 한다.
+
+마이바티스는 구현체를 우리가 만드는게 아니다. 인터페이스만 만들면 된다!
+
+repository에 인터페이스 하나 생성ScoreMapper
+ScoreController, scoreservice 에서 scoreRepository.~~를 scoreMapper로 변경
+=> 오류 500번이 나와야 정상
+
+resources폴더에 mapper의 경로를 정확하게 일일히 폴더 경로를 만들어줘야한다. (이건 노가다)인터페이스 파일명과 똑같이 짓고 .xml 파일로 생성
+
+xml도 html처럼 doctype 이 필요하니 구글링 mybatis mapper doctype
+https://mybatis.org/mybatis-3/ko/getting-started.html
+내리면 매핑된 SQL 구문 살펴보기 보면 나와있음
+
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.mybatis.example.BlogMapper">
+  <select id="selectBlog" resultType="Blog">
+    select * from Blog where id = #{id}
+  </select>
+</mapper>
+
+
+mvc.board 폴더 속 controller, domain, repository, service 패키지 필수 기본 구조
+
+BoardMapper 만들고 resources폴더에도 같은 경로로 xml 파일 생성
+
+항상 UI 보다 백엔드 먼저 해서 작동되고 연결 되는지 확인 한 후에 어떻게 나타낼지 고민하는거다.
+

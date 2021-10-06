@@ -32,10 +32,20 @@ dependencies {
 	implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
 
 	//database 관련 라이브러리 추가
-//jdbc 라이브러리	>> 쓰는 순간 DB 연결설정을 해줘야 오류가 안 난다.
+	//jdbc 라이브러리	>> 쓰는 순간 DB 연결설정을 해줘야 오류가 안 난다.
 	implementation "org.springframework.boot:spring-boot-starter-jdbc"
-//오라클 라이브러리 (11g edition - gradle, maven 라이센스 문제 공식 지원 불가)
+	//오라클 라이브러리 (11g edition - gradle, maven 라이센스 문제 공식 지원 불가)
 	implementation fileTree(dir: '/src/main/webapp/WEB-INF/lib', include: ['*.jar'])
+
+
+	/*
+			찐 실무 스프링
+	 */
+
+	//mybatis 마이바티스 라이브러리
+	// https://mvnrepository.com/artifact/org.mybatis.spring.boot/mybatis-spring-boot-starter
+	implementation group: 'org.mybatis.spring.boot', name: 'mybatis-spring-boot-starter', version: '2.1.0'
+
 }
 
 test {
