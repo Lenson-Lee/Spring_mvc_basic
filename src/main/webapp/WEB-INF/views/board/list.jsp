@@ -89,11 +89,11 @@
                 <td>${article.boardNo}</td>
                 <td>${article.writer}</td>
                 <td>
-                    <a href="/board/content">${article.title}</a>
+                    <a href="/board/content?boardNo=${article.boardNo}">${article.title}</a>
                 </td>
                 <td>${article.viewCnt}</td>
                 <td>
-                    <a href="/board/delete?boardNo=${article.boardNo}">[삭제]</a>
+                    <a data-board-no="${article.boardNo}" class="del-btn" href="#">[삭제]</a>
                 </td>
             </tr>
         </c:forEach>
@@ -131,6 +131,36 @@
     </p>
 
 
+    <script>
+        //게시물 등록 처리 알림
+
+        const msg = '${msg}';//보드컨트롤러 자바서버에서 타고옴. 게시물이 성공했으면 success, 실패 fail 들어있음
+        if (msg === 'success') {
+            alert('게시물 등록 성공!');
+        } else if (msg === 'fail') {
+            alert('게시물 등록 실패!');
+        }
+    
+        //삭제 버튼 클릭 이벤트
+        //삭제 버튼에 바로 달면 첫째줄만 된다. 수많은 삭제여서 버블링, 부모 태그에 써야함
+        const delBtn = document.querySelector('del-btn');
+        const table = document.querySelector('table');
+
+        table.addEventListener('click', e => {
+
+            if(!e.target.matches('table a.del-btn')) return;
+
+            e.preventDefault();  //a 태그의 링크가 클릭이벤트보다 우선시되어서 막아야 컨펌기능이 실행된다.
+            //console.log('삭제버튼 클릭됨!');
+
+            //article.boardNo 변수는 forEach 함수에서 쓰는 태그라 함수가 끝나면서 사라져 사용이 불가능. => dataset 사용
+            const boardNo = e.target.dataset.boardNo;
+            
+            if (confirm('정말로 삭제하겠습니까?')) {
+                location.href = '/board/delete?boardNo=' + boardNo;
+            }
+        });
+    </script>
 
 
 </body>

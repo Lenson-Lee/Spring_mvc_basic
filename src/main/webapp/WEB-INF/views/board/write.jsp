@@ -48,13 +48,15 @@
    <form action="/board/write" method="post">
       <p>
 
-         # 작성자: <input class="form-control" type="text"><br>
+         # 작성자: <input class="form-control" type="text" name="writer"><br>
          # 제목: <input type="text" name="title"><br>
          # 내용: <br>
          <textarea rows="5" cols="30" name="content"></textarea>
          <br>
          
+         
       </p>
+      <button type="submit">등록</button>
    </form>
 
    <a href="/board/list">글 목록보기</a>   
