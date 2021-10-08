@@ -2,6 +2,8 @@ package com.spring.mvc.board.controller;
 
 import com.spring.mvc.board.domain.Board;
 import com.spring.mvc.board.service.BoardService;
+import com.spring.mvc.common.paging.Page;
+import com.spring.mvc.common.paging.PageMaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,10 +33,12 @@ public class BoardController {
 
     //게시물 목록 요청
     @GetMapping("/list")
-    public String list(Model model) {
+    public String list(Page page, Model model) {
         log.info("/board/list GET 요청 발생!");
-        List<Board> articles = boardService.getArticles();
+        List<Board> articles = boardService.getArticles(page);
         model.addAttribute("articles", articles);
+        model.addAttribute("maker", new PageMaker(page, boardService.getCount()));//총 개시물수는 DB갔다 와야 해서 서비스에서 받는다. => 서비스에서 코드 생성
+
         return "board/list";//board  폴더의 list.jsp 에 보내야함.
     }
 
@@ -75,5 +79,28 @@ public class BoardController {
         return "redirect:/board/list";
     }
 
+    //글 수정 화면 요청하기
+    @GetMapping("/modify")
+    public String modify(int boardNo, Model model) {
+        log.info("/board/modify GET! - " + boardNo);
+
+        Board content = boardService.getContent(boardNo);   //재사용 하면 되지롱~~
+        model.addAttribute("article", content);
+
+        return "/board/modify";
+    }
+
+    //글 수정 완료처리 요청
+    @PostMapping("/modify")
+    public String modify(Board board) {
+        log.info("/board/modify POST! - " + board);
+
+        //로그를 보면 update 에서 글 제목, 내용은 잘 넘어오는데 보드넘버가 안넘어온다..
+        //Post 는 무조건 input 으로 넘어오는데.. 사용자 몰래 넘겨야 한다 -> input type = hidden
+
+        boardService.modify(board);
+        return "redirect:/board/content?boardNo=" + board.getBoardNo();
+        //수정완료 알림은 리다이랙트 애트리뷰트에 담아서 서버에 띄운다..?
+    }
 }
 

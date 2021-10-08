@@ -1,6 +1,7 @@
 package com.spring.mvc.board.repository;
 
 import com.spring.mvc.board.domain.Board;
+import com.spring.mvc.common.paging.Page;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -94,7 +95,22 @@ class BoardMapperTest {
         assertEquals("수정수정수정", content.getTitle());
     }
 
+    @Test
+    @DisplayName("페이징을 적용하여 게시물이 조회되어야 한다.")
+    void pageTest1() {
+        int page = 10;
+        int amount = 20;
+        Page p = new Page();
+        p.setPageNum(page);
+        p.setAmount(amount);
 
+        List<Board> articles = boardMapper.getArticles(p);
+
+        System.out.println("\n =================================");
+        for(Board article : articles) {
+            System.out.println(article);
+        }
+    }
 
 
 }
