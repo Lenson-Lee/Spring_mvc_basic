@@ -17,7 +17,7 @@
         ORDER BY board_no DESC
     </select>
 
-<!--  인터페이스에서 ()에 적은거 넣어야해~!!  -->
+    <!--  인터페이스에서 ()에 적은거 넣어야해~!!  -->
     <select id="getContent" resultMap="boardMap">
         SELECT * FROM board
         WHERE board_no = #{boardNo}
@@ -25,9 +25,9 @@
 
     <insert id="insertArticle">
         INSERT INTO board
-            (board_no, title, content, writer)
+        (board_no, title, content, writer)
         VALUES
-            (seq_board.nextval, #{title}, #{content}, #{writer})
+        (seq_board.nextval, #{title}, #{content}, #{writer})
     </insert>
 
     <delete id="deleteArticle">
@@ -37,10 +37,15 @@
 
     <update id="modifyArticle">
         UPDATE board SET
-            title = #{title}, content = #{content}
+        title = #{title}, content = #{content}
         WHERE board_no = #{boardNo}
     </update>
 
-
+    <!--  조회수 상승 SQL  -->
+    <update id="upViewCount">
+        update board
+        set view_cnt = view_cnt + 1
+        where board_no = #{boardNo}
+    </update>
 
 </mapper>

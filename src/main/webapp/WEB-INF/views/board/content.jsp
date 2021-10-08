@@ -32,9 +32,13 @@
             display: flex;
         }
     </style>
+
+    <%@ include file="../include/static-head.jsp" %>
 </head>
 
 <body>
+
+    <%@ include file="../include/header.jsp" %>
 
     <div class="container">
         <div class="row">
@@ -51,7 +55,7 @@
 
                 <a href="/board/list">글 목록보기</a>&nbsp;
 
-                <a href="#">글 수정하기</a>
+                <a href="/board/modify?boardNo=${article.boardNo}">글 수정하기</a>
 
 
             </div>

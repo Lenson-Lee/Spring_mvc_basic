@@ -164,6 +164,102 @@ BoardMapper 만들고 resources폴더에도 같은 경로로 xml 파일 생성
 
 항상 UI 보다 백엔드 먼저 해서 작동되고 연결 되는지 확인 한 후에 어떻게 나타낼지 고민하는거다.
 
-~~
-직접하는시간
-상세조회 만들기
+
+======================================
+
+
+
+## 외부 CSS를 jsp에 넣는방법	(Vscode에서 여는거 추천 자동완성ㄷ때문에)
+
+list.jsp 보면 head태그 마지막에 css가 링크되어있는데 연결되지 않아있는거 확인 가능.
+main.resources.(경로추가)css에 파일 main.css 추가
++ 다시 재실행 할 필요 없이 빌드에서 다시컴파일 하면 빠르다
+
+
+header의 경우에 게시판 홈을 지나가면 헤더가사라지는데 고정하고 싶다면?
+-> 페이지마다 헤더 코드를 복붙한다 >> 노가다 (X)
+-> 헤더같이 레이아웃이 변하지 않고 모든 부분에서 공통인 부분은 삽입방식(include)를 사용한다.
+
+WEB-INF.include(생성) header.jsp 생성해서 h1태그 복붙 후
+html에는 해당 위치에 <%@ include file="../include/header.jsp" %> 을 넣어준다
+
+static-head.jsp : head파일에 들어가는 css 넣는곳
+content, list, write 파일 head 마지막에 css 링크 넣어두면 전부 적용 된다.
+footer도 똑같이 하면 된다.
+
+백엔드는 css할 시간 없으니 부트스트랩 사용 주로 한다. 반응형까지 해결해줌
+https://getbootstrap.com/
+아코디언, 드롭다운, 캐러셀, 네비게이션 바,(컴포넌트)버튼같은거는 코드 긁어다 쓰는게 더 편함
+
+다운로드 > 폰트어썸같이 css 파일 맨 위에에 넣으면 된다.  integri인티그리티부터는 지워도 된다.
+**제이쿼리 필요한 다른 방법: 혹은 링크를 넣는 cdn을 사용하면 된다. 
+
+문서에서 원하는 디자인 찾아서 class 명 확인 후 해당 클래스 적용하면 디자인 사용 가능
+
+
+
+======================================
+
+
+
+앞으로 할 일
+게시판 페이징, 검색, 댓글(API 비동기통신), 회원(세션, 쿠키), 권한, 파일업로드(첨부파일로 돌리기), sns로그인 등등..
+
+
+
+=======================================
+
+
+## flow: 작성시간이 6시간 이내인 게시글에 new마크 붙게 하기
+시간의 흐름	
+new는 조건이 되야 발동 
+	<c:if test = "${article.newFlag}">
+(불린값은 자체가 트루여서 == true안써도 된다) 속에 span 태그 new 넣기
+
+list.jsp 맨 위에 코드 prefix c를 fmt 로, url도 바꿔준다.
+
+<fht:formatDate value="${article.regDate}"
+                            pattern="yyyy-MM-dd a hh:mm:ss"/> a는 am/pm
+
+BoardMapper에 newFlag 추가
+
+
+========================================
+
+
+list에서 수정하기 버튼에 링크하고 파라미터 글번호 넣어서 특정 글을 가져오게끔 한다.
+      <a href="/board/modify?boardNo=${article.boardNo}">글 수정하기</a>
+
+인텔리제 보드컨트롤러에서 boardNo를 받도록 한다.
+
+modify 파일 작성
+제목에 input이 필요
+내용에 textare  disabled 수정가능하게끔 지우기value는 제목이 들어간다.
+
+input내용은 form으로 보내야 하니 감싼다.
+
+보드서비스에 수정 작성 후 보드컨트롤러에 수정 완료처리 로직 생성
+
+로그를 보면 글 번호가 안넘어온다.
+<input type="hidden" name="boardNo" value="${article.boardNo}">
+-> 사용자에겐 안보이지만 글번호가 함께 넘어오도록 심었음
+
+
+
+========================================
+
+
+/content 요청 들어왔을 때 조회수 1 증가(컨트롤러의 상세 조회 요청에 반응)
+-> 서비스의 getContent 에서 조회수 올령 @Transactional 추가해서 알아서 롤백 해주도록?
+
+조회수는 sql에서 view_cnt에 저장되어야 한다.
+update board
+set view_cnt = view_cnt + 1
+where board_no = 1; 커밋하고 테이블 보면 올라간거 확인 가능
+
+boardMapper.xml에 써놔야한다. 
+      => 우선 인터ㅔ페이스에 추상메서드 먼저 추가해야한다. => 레파지토리 수정해야한다. => xml에 추가할때 보드넘버를 #{boardNo}로 해놓기
+
+
+
+

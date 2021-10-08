@@ -24,4 +24,7 @@ public interface BoardMapper {
     //5. 게시물 수정
     boolean modifyArticle(Board board);
 
+
+    //6. 조회수 상승
+    void upViewCount(int boardNo);
 }
