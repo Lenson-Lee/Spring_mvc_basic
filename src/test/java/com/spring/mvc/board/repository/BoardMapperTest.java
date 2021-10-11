@@ -57,7 +57,7 @@ class BoardMapperTest {
         Board content = boardMapper.getContent(30);
 
         //(기대값, 실제값)
-        assertEquals("User30", content.getWriter());
+        assertEquals("User1", content.getWriter());
     }
 
     //삭제 테스트

@@ -61,6 +61,9 @@ implementation fileTree(dir: '/src/main/webapp/WEB-INF/lib', include: ['*.jar'])
 ```
 
 - 스프링에게 DataSource정보 알려주기 (Hikari DataSource)
+
+- 다른 컴퓨터에서 오픈 할 때에도 cmd로 sqlplus 들어가서 계정 추가해줘야 한다
+- 게시글 만들기 기능의 경우에는 테스트까지 돌려야 게시글 300개가 추가되었다.
 ```java
 //각종 설정 정보를 담을 클래스 (빈 등록)
 @Configuration
