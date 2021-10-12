@@ -97,7 +97,7 @@
                             </c:if>
 
                             <c:if test="${article.viewCnt >= 2}">
-                                <span class="badge badge-pill badge-info">hit</span>
+                                <span class="badge rounded-pill bg-info text-dark">hit</span>
                             </c:if>
 
                         </td>

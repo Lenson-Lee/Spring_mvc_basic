@@ -12,11 +12,11 @@
     </resultMap>
 
 
-    <select id="getArticles" resultMap="boardMap">
-        SELECT * FROM board
-        ORDER BY board_no DESC
-    </select>
-    -->
+<!--    <select id="getArticles" resultMap="boardMap">-->
+<!--        SELECT * FROM board-->
+<!--        ORDER BY board_no DESC-->
+<!--    </select>-->
+
 
     <!--  2. 페이징 적용 게시물 조회 -->
     <select id="getArticles" resultMap="boardMap">
