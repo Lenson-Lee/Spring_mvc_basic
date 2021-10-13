@@ -66,7 +66,7 @@
       <button type="submit">등록</button>
    </form>
 
-   <a href="/board/list">글 목록보기</a>
+   <a href="/board/list?pageNum=${page.pageNum}&amount=${page.amount}">글 목록보기</a>
 
 </body>
 

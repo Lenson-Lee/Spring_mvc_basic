@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -34,21 +35,25 @@ public class BoardController {
     //게시물 목록 요청
     @GetMapping("/list")
     public String list(Page page, Model model) {
-        log.info("/board/list GET 요청 발생!");
+        log.info("/board/list GET 요청 발생!" + page);
         List<Board> articles = boardService.getArticles(page);
         model.addAttribute("articles", articles);
-        model.addAttribute("maker", new PageMaker(page, boardService.getCount()));//총 개시물수는 DB갔다 와야 해서 서비스에서 받는다. => 서비스에서 코드 생성
+        model.addAttribute("maker", new PageMaker(page, boardService.getCount(page)));//총 개시물수는 DB갔다 와야 해서 서비스에서 받는다. => 서비스에서 코드 생성
 
         return "board/list";//board  폴더의 list.jsp 에 보내야함.
     }
 
     //상세조회
     @GetMapping("/content")
-    public String content(Model model, int boardNo) {
+    public String content(Model model, int boardNo,
+                          @ModelAttribute("p") Page page) {
         log.info("/board/content GET 요청 발생! 글번호: " + boardNo);
         Board getContent = boardService.getContent(boardNo);
         //jsp에게 주기 위해 모델이 필요하다.
         model.addAttribute("article", getContent);  //content.jsp 보면 다 article이다.
+        //model.addAttribute("page", page);   //page는 모델에 담아서 content.jsp로 보내서 글 목록보기에서 목록으로 넘어가도 1페이지가 아닌 현재페이지로 이동
+        //@ModelAttribute로 바로 가능    @ModelAttribyte()로 비워두면 변수명 그대로 들어감.
+
         return "board/content";
     }
 

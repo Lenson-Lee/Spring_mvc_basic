@@ -18,8 +18,10 @@ public interface BoardMapper {
     //1-2. 페이징 적용(기존코드에 문제가 생기지 않도록 ( 아직 서비스랑 컨트롤을 수정하지 않아서 복사해서 씀)
     List<Board> getArticles(Page page);
 
+    //1-3. 검색 적용    (최종본. 1. 1-2 는 연습용)
+    List<Board> getSearchArticles(Page page);
     //총 겜시물 수 조회
-    int getTotalCount();
+    int getTotalCount(Page page);
 
     //2. 게시물 상세 조회
     Board getContent(int boardNo);

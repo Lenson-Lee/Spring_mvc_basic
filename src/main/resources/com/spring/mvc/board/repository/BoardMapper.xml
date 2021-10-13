@@ -12,25 +12,58 @@
     </resultMap>
 
 
-<!--    <select id="getArticles" resultMap="boardMap">-->
-<!--        SELECT * FROM board-->
-<!--        ORDER BY board_no DESC-->
-<!--    </select>-->
+    <!--    <select id="getArticles" resultMap="boardMap">-->
+    <!--        SELECT * FROM board-->
+    <!--        ORDER BY board_no DESC-->
+    <!--    </select>-->
 
 
-    <!--  2. 페이징 적용 게시물 조회 -->
-    <select id="getArticles" resultMap="boardMap">
+    <!--    &lt;!&ndash;  2. 페이징 적용 게시물 조회 &ndash;&gt;-->
+    <!--    <select id="getArticles" resultMap="boardMap">-->
+    <!--        &lt;!&ndash; CDATA로 감싸는 이유는 마크업 내부에서 특수문자를 문자로 인식시키기 위함.-->
+    <!--            이 안에 태그는 다 인식 안된다. 문자로 인식 되는 특징 있음. &ndash;&gt;-->
+    <!--        <![CDATA[-->
+    <!--        SELECT-->
+    <!--        board_no, writer, title, content, reg_date, view_cnt-->
+    <!--        FROM-->
+    <!--        (SELECT  /*+INDEX_DESC(board pk_board)*/-->
+    <!--        rownum rn, board_no, title, writer, content, reg_date, view_cnt-->
+    <!--        FROM board-->
+    <!--        WHERE rownum <= #{pageNum} * #{amount})-->
+    <!--        WHERE rn > (#{pageNum} - 1) * #{amount}-->
+    <!--        ]]>-->
+    <!--    </select>-->
+
+    <!--    3. 검색 + 페이지 적용 게시물 조회 -->
+    <select id="getSearchArticles" resultMap="boardMap">
         <!-- CDATA로 감싸는 이유는 마크업 내부에서 특수문자를 문자로 인식시키기 위함.
             이 안에 태그는 다 인식 안된다. 문자로 인식 되는 특징 있음. -->
         <![CDATA[
-        SELECT
-        board_no, writer, title, content, reg_date, view_cnt
-        FROM
-        (SELECT  /*+INDEX_DESC(board pk_board)*/
-        rownum rn, board_no, title, writer, content, reg_date, view_cnt
-        FROM board
-        WHERE rownum <= #{pageNum} * #{amount})
-        WHERE rn > (#{pageNum} - 1) * #{amount}
+            SELECT
+            board_no, writer, title, content, reg_date, view_cnt
+            FROM
+            (SELECT  /*+INDEX_DESC(board pk_board)*/
+            rownum rn, board_no, title, writer, content, reg_date, view_cnt
+            FROM board
+            WHERE 1=1
+            ]]>
+        <if test="type == 'title'">
+            AND title LIKE '%'|| #{keyword} || '%'
+        </if>
+        <if test="type == 'content'">
+        AND content LIKE '%'|| #{keyword} || '%'
+        </if>
+        <if test="type == 'writer'">
+        AND writer LIKE '%'|| #{keyword} || '%'
+        </if>
+        <if test="type == 'titleContent'">
+        AND title LIKE '%'|| #{keyword} || '%'
+        OR content LIKE '%'|| #{keyword} || '%'
+        </if>
+
+        <![CDATA[
+                AND rownum <= #{pageNum} * #{amount})
+            WHERE rn > (#{pageNum} - 1) * #{amount}
         ]]>
     </select>
 
@@ -38,9 +71,23 @@
     <select id="getTotalCount" resultType="int">
         SELECT COUNT(*)
         FROM board
+        WHERE 1=1
+        <if test="type == 'title'">
+            AND title LIKE '%' || #{keyword} || '%'
+        </if>
+        <if test="type == 'content'">
+            AND content LIKE '%' || #{keyword} || '%'
+        </if>
+        <if test="type == 'writer'">
+            AND writer LIKE '%' || #{keyword} || '%'
+        </if>
+        <if test="type == 'titleContent'">
+            AND title LIKE '%' || #{keyword} || '%'
+            OR content LIKE '%' || #{keyword} || '%'
+        </if>
     </select>
 
-<!--  인터페이스에서 ()에 적은거 넣어야해~!!  -->
+    <!--  인터페이스에서 ()에 적은거 넣어야해~!!  -->
     <select id="getContent" resultMap="boardMap">
         SELECT * FROM board
         WHERE board_no = #{boardNo}
@@ -48,9 +95,9 @@
 
     <insert id="insertArticle">
         INSERT INTO board
-            (board_no, title, content, writer)
+        (board_no, title, content, writer)
         VALUES
-            (seq_board.nextval, #{title}, #{content}, #{writer})
+        (seq_board.nextval, #{title}, #{content}, #{writer})
     </insert>
 
     <delete id="deleteArticle">
@@ -60,10 +107,15 @@
 
     <update id="modifyArticle">
         UPDATE board SET
-            title = #{title}, content = #{content}
+        title = #{title}, content = #{content}
         WHERE board_no = #{boardNo}
     </update>
 
-
+    <!--  조회수 상승 SQL  -->
+    <update id="upViewCount">
+        update board
+        set view_cnt = view_cnt + 1
+        where board_no = #{boardNo}
+    </update>
 
 </mapper>
