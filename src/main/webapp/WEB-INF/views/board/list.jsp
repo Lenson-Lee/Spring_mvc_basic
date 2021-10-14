@@ -69,9 +69,9 @@
 
         <div class="list-container">
             <div class="amount">
-                <a href="/board/list?amount=10">10</a>
-                <a href="/board/list?amount=20">20</a>
-                <a href="/board/list?amount=30">30</a>
+                <a href="/board/list?amount=10&type=${maker.page.type}&keyword=${maker.page.keyword}">10</a>
+                <a href="/board/list?amount=20&type=${maker.page.type}&keyword=${maker.page.keyword}">20</a>
+                <a href="/board/list?amount=30&type=${maker.page.type}&keyword=${maker.page.keyword}">30</a>
             </div>
 
             <table border="1">
@@ -90,7 +90,7 @@
                         <td>${article.boardNo}</td>
                         <td>${article.writer}</td>
                         <td>
-                            <a href="/board/content?boardNo=${article.boardNo}&pageNum=${maker.page.pageNum}&amount=${maker.page.amount}">${article.title}</a>
+                            <a href="/board/content?boardNo=${article.boardNo}&pageNum=${maker.page.pageNum}&amount=${maker.page.amount}&type=${maker.page.type}&keyword=${maker.page.keyword}">${article.title}</a>
 
                             <c:if test="${article.newFlag}">
                                 <span class="badge rounded-pill bg-danger">new</span>
@@ -107,8 +107,6 @@
                         </td>
                         <td>
                             <a>${article.viewCnt}</a>
-
-
                         </td>
                         <td>
                             <a data-board-no="${article.boardNo}" class="del-btn" href="#">[삭제]</a>
@@ -123,34 +121,38 @@
 
                 <c:if test="${maker.prev}">
                     <li class="page-item"><a class="page-link"
-                            href="/board/list?pageNum=${maker.beginPage - 1}&amount=${maker.page.amount}">Previous</a></li>
+                            href="/board/list?pageNum=${maker.beginPage - 1}&amount=${maker.page.amount}&type=${maker.page.type}&keyword=${maker.page.keyword}">Previous</a></li>
                 </c:if>
 
                 <c:forEach var="i" begin="${maker.beginPage}" end="${maker.endPage}" step="1">
-                    <li class="page-item"><a class="page-link" href="/board/list?pageNum=${i}&amount=${maker.page.amount}">${i}</a></li>
+                    <li class="page-item"><a class="page-link" 
+                        href="/board/list?pageNum=${i}&amount=${maker.page.amount}&type=${maker.page.type}&keyword=${maker.page.keyword}">${i}</a></li>
                 </c:forEach>
 
 
                 <c:if test="${maker.next}">
                     <li data-page="${i}" class="page-item"><a class="page-link"
-                            href="/board/list?pageNum=${maker.endPage + 1}&amount=${maker.page.amount}">Next</a></li>
+                            href="/board/list?pageNum=${maker.endPage + 1}&amount=${maker.page.amount}&type=${maker.page.type}&keyword=${maker.page.keyword}">Next</a></li>
                 </c:if>
             </ul>
 
 
             <!-- 검색창 영역 method 없으면 GET타입이다. -->
+            <!-- hidden으로 숨겨서 어마운트를 줘서 검색후에도 20줄씩 보이도록 -->
             <div class="search">
                 <form action="/board/list" id="search-form">
 
+                    <input type="hidden" name="amount" value="${maker.page.amount}">
+
                     <select name="type">
-                        <option value="title">제목</option>
-                        <option value="content">내용</option>
-                        <option value="writer">작성자</option>
-                        <option value="titleContent">제목+내용
+                        <option value="title" ${maker.page.type == 'title' ? 'selected' : ''}>제목</option>
+                        <option value="content"${maker.page.type == 'content' ? 'selected' : ''}>내용</option>
+                        <option value="writer" ${maker.page.type == 'writer' ? 'selected' : ''}>작성자</option>
+                        <option value="titleContent" ${maker.page.type == 'titleContent' ? 'selected' : ''}>제목+내용
                         </option>
                     </select>
 
-                    <input type="text" name="keyword" placeholder="검색어를 입력!" value="">
+                    <input type="text" name="keyword" placeholder="검색어를 입력!" value="${maker.page.keyword}">
 
                     <button type="submit">검색</button>
 

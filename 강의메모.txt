@@ -2,6 +2,10 @@ ctr shift E 최근파일
 커서에 ctr shift T => ctrl 클릭
 메서드로 빼고싶은 코드들 블럭 => ctrl alt M
 
+500: 인텔리제 로그확인 => 로그 앞에 들여쓰기가 있는데 올리다보면 들여쓰기가 사라지는 부분이 있다. 이 부분이 핵심 오류로그다 첫 줄 ERROR 12345 이부분에서 몇 번 라인에 뭐가 어떤지 다 뜸
+404: 주소값 확인
+
+
 리드미에서 groovy라고 적힌 부분들은 build.gradle에 넣는거다.
 
 스프링은 기본적으로 톰캣이 내장되어있다
@@ -326,4 +330,96 @@ DB 갔다와서 총 게시물 수, 이전버튼을 활성화 할지, 몇 개를 
 this.endPage = (int) Math.ceil((double) page.getPageNum() / 5) * 5;
 
 총 게시물 수 조회 xml 넣고
+
+학원 데이터 집에서 연결하는 방법: 내 아이피를 config에서 jdbcUlr에 넣기 124.194.51.14:1521:xe 처럼.근데 방화벽 해제해야 다른 컴에서 연결된다.
+
+
+
+
+==============================================
+
+
+
+10.13
+
+list.jsp에서 페이지 li태그에 data-page에 값을 넣어 스크립트에서 
+
+페이지 숫자 넘어갈 때 리스트 정렬개수 연동 가능
+${param.pageNum} 현재 페이지 숫자 param
+근데 1페이지에서 오류나서 그냥 maker.page.pageNum 쓰기
+
+
+쿼리는 컬럼명에 '가 들어가면 안된다. 
+  WHERE 1=1	=> true값을 넣기 위해 1=1 넣음
+                AND title LIKE '%'|| #{keyword} || '%' => ${title}로 들어가면 'title'로 들어가서 오류가 발생해서 title로만 만들어야 한다
+                AND rownum <= #{pageNum} * #{amount})
+
+=>>동적 SQL(마이바티스랑 프레임워크에서 지원)
+<if test="type == 'title'">
+            AND title LIKE '%'|| #{keyword} || '%'
+        </if>
+처럼 타입을 if문으로 넣어 선택이 가능 + CDATA 중간에 끊어서 입력후 다음 쿼리에서 다시 마이데이타 넣어야한다
+
+
+
+=================================================
+
+
+
+사수가있냐,배울게있냐,프로젝트가 있냐... 맨날 유지보수하는 업체는 안된다.... 프로젝트도있고 플랫폼도 있고 뭔가 솔류션 있는 그런데 가서 연봉생각말고 배우는게 우선이다....
+1,2년있다 도망치면 된다.....
+
+
+
+##댓글기능 (API 스프링교안 2-1웹의이해 45p
+지금까지 게시글은 서버사이드렌더링 SSR이었지만 댓글은 클라이언트사이드렌더링 CSR사용할 예정
+
+만드는거 순서대로 복습~
+
+CREATE TABLE tbl_reply (
+    reply_no NUMBER(10),
+    board_no NUMBER(10) NOT NULL,
+    reply_text VARCHAR2(1000) NOT NULL,
+    reply_writer VARCHAR2(50) NOT NULL,
+    reply_date DATE default SYSDATE,
+    CONSTRAINT pk_reply PRIMARY KEY (reply_no),
+    CONSTRAINT fk_reply_free_board
+    FOREIGN KEY (board_no)
+    REFERENCES board (board_no)
+);
+
+SQL 복사해서 static.ddl.tbl_reply.sql 생성해서 붙여넣기
+
+컨트롤러가 기존에 요청받으면 jsp에 보냇는데 댓글부터는 순수데이터를 클라이언트에 보내게 된다.
+
+항상 도메인 먼저 만든다.(모델 혹은 엔터티라고도 부른다)
+com.spring.mvc.reply.domain 도메인패키지생성 클래스 reply생성
+여기는 데이터베이스랑 1대1 매치된다.
+
+변수들 정하고, 세터게터투스트링 @NoArg, @AllArg 만들기
+
+항상 순서는
+먼저 db테이블 만들고 이에 맞는도메인 만들고 crud할 매퍼를 테스트하고 db가 안정화되면 컨트롤러, url등 앞으로 오고 마지막에 css html.
+
+reply.repository 패키지 생성 후 인터페이스 만들기 
+함수명, 매개변수 넣고 이제 sql 만들러 간다 => resources.com.spring.mvc에 reply.repository.ReplyMapper.xml생성
+
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 복붙
+
+sql 일단 틀 짜고 내용 채워넣는 순서로 했다. save에서 시간은 입력하지 않은 이유가 시간 sql 보면 default로 자동이기 때문
+
+이제 잘 돌아가는지 테스트를 해보자..
+매퍼 인터페이스에서 ctrl shift t 새 테스트 생성 + @스프링부트 테스트
+(junit이라는 라이브러리다! 회사에서 junit도 기술 스택으로 치니까 잊지말기! 메이븐이랑 그레이들도 지원자격에 있다)
+
+@Autowired주입받으려면 @스프링부트테스트 필요해서 넣어야 한다. 의존성떄문에 좋지않다했는데..?
+
+인터페이스에서 ctrl shift t => 테스트생성
+댓글입력테스트문 입력 후 sql디벨롭퍼에서 확인해야한다. 아직 화면에 구성을 안해서.
+SELECT * FROM tbl_reply;
+
+
 

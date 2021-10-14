@@ -53,7 +53,7 @@
                     <textarea rows="5" cols="30" disabled>${article.content}</textarea>
                 </p>
 
-                <a href="/board/list?pageNum=${p.pageNum}&amount=${p.amount}">글 목록보기</a>&nbsp;
+                <a href="/board/list?pageNum=${page.pageNum}&amount=${page.amount}&type=${page.type}&keyword=${page.keyword}">글 목록보기</a>&nbsp;
 
                 <a href="/board/modify?boardNo=${article.boardNo}">글 수정하기</a>
 

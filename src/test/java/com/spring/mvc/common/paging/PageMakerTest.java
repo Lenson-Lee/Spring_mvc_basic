@@ -18,14 +18,15 @@ class PageMakerTest {
     @DisplayName("현재 페이지 번호와 총 게시물 수에 따라 페이지 정보를 정확하게 생성해야 한다.")
     void pageMakeTest(){
         Page page = new Page(27, 10);
-        int total = boardMapper.getTotalCount();
+        int total = boardMapper.getTotalCount(page);
 
         PageMaker maker = new PageMaker(page, total);
         System.out.println("===================================");
         System.out.println(maker);
 
 //        assertEquals(28, maker.getEndPage());
-
     }
+
+
 
 }

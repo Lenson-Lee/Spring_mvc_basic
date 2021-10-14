@@ -46,12 +46,12 @@ public class BoardController {
     //상세조회
     @GetMapping("/content")
     public String content(Model model, int boardNo,
-                          @ModelAttribute("p") Page page) {
+                          @ModelAttribute Page page) {
         log.info("/board/content GET 요청 발생! 글번호: " + boardNo);
         Board getContent = boardService.getContent(boardNo);
         //jsp에게 주기 위해 모델이 필요하다.
         model.addAttribute("article", getContent);  //content.jsp 보면 다 article이다.
-        //model.addAttribute("page", page);   //page는 모델에 담아서 content.jsp로 보내서 글 목록보기에서 목록으로 넘어가도 1페이지가 아닌 현재페이지로 이동
+        //model.addAttribute("p") Page page);   //page는 모델에 담아서 content.jsp로 보내서 글 목록보기에서 목록으로 넘어가도 1페이지가 아닌 현재페이지로 이동
         //@ModelAttribute로 바로 가능    @ModelAttribyte()로 비워두면 변수명 그대로 들어감.
 
         return "board/content";
