@@ -423,3 +423,41 @@ SELECT * FROM tbl_reply;
 
 
 
+=============================================
+
+
+
+10.15	ApiControllerV1
+
+@ResponseBody 라는 아너테이션을 붙이면 클라이언트에게 보낸다?
+// http://localhost:8182/api/v1/hobby => 제이슨 출력 
+제이슨 예쁘게 나오는 플러그인은 크롬에서 오른쪽 위 설정에서 확장프로그램 플러그인 다운 > JSON Viewer + Boomerang 깔기
+
+스트링은 리스트 배열 똑같이 나온다.
+배열은 [ 리스트는 { 
+
+투두리스트 만들었던때 보면 SSR의 태초? 시작? 이 있음을 확인가능.
+
+apicontroller v1은 예제용, v2 보고 공부하기
+
+public ResponseEntity<String> hello(String p) {
+이부분은 http status를 알고 있어야 한다. 구글에 쳐보면 숫자별로 상태를 알려주는데 
+일반적으로 200, 201이뜨면 성공 HttpStatus를 통해 오류 설정이 가능
+http://localhost:8182/api/v2/hello?p=hi 는 200번 성공, http://localhost:8182/api/v2/hello 는 500번 오류
+
+비동기통신: 동기화가 안됬다는 말. 지금까지는 동기통신이었다. 근데 댓글은 비동기 통신으로 만들 예정. 컨텐트등록은 유지되면서 댓글등록요청은 몰래 비동기로 작동 => API 방식 써야함 Rest Api
+
+동기통신: 무언가를 요청하면 화면이 깜박거린다(새로고침 발생=> 댓글입력하다가 새로고침하면 사라진다? 근데 동영상 보다가 댓글썼는데 사라지는 경우가 동기).
+
+댓글 보이게 하려면 클라이언트사이드렌더링? 하고 제이슨을 받아와야한다.
+
+html을 보낼때는 그냥 컨트롤러 ssr
+댓글  json을 보낼때는 csr?????????????????????
+
+RestApi 인터넷보고 검색해보고 공부하기
+GET: select요청
+POST: insert 요청
+PUT: upcdate
+DELETE : delete
+
+ReplyService에서 Restapi 설계했다.

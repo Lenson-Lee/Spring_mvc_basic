@@ -20,6 +20,7 @@ public interface ReplyMapper {
     //댓글 목록 조회(셀렉트 프롬 tbl_reply where boardNo = nn
     List<Reply> getList(int boardNo);
 
+    Reply read(int replyNo);
 
 
 }

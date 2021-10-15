@@ -5,6 +5,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -51,12 +53,13 @@ class ReplyMapperTest {
 
     @Test
     @DisplayName("특정 게시물을 삭제할 수 있어야 한다.")
+    @Transactional @Rollback    //삭제 후 테스트가 끝나면 롤백이 된다.
 //    @Transactional @Rollback
     void deleteTest() {
-        replyMapper.delete(11);
-        replyMapper.delete(12);
+        replyMapper.delete(312);
+        replyMapper.delete(311);
 
-//        assertTrue(replyMapper.getList(322).size() == 16);
+        assertTrue(replyMapper.getList(311).size() == 16);
     }
 
 }
