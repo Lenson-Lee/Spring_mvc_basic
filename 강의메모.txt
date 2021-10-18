@@ -461,3 +461,62 @@ PUT: upcdate
 DELETE : delete
 
 ReplyService에서 Restapi 설계했다.
+@RestController 비동기통신
+
+
+크롬 확장자 부메랑 실행 후 http://localhost:8182/api/v1/reply/321 (=주소값)입력
+겟방식은 포스트,풋,딜리트는와 요청방식이  달라서 부메랑에서 해야함
+(new,같은 사족은 ㄴㄴ)url은 상당히 심플하게 하고, GET,PUT,POST등 같은 url여도 방식이 다르면 다르게 작동
+부메랑 사용할떄 POST방식으로 주소 입력하고 왼쪽에 코드 창 json으로 작성해야함
+부메랑 제이슨은 문자열 넣을떄 "" 넣어야함
+	키 값은 Reply 클래스의 이름과 맞아야 한다..
+	
+{
+    "boardNo" : 312,
+    "replyText": "비동기 POST 테스트 중",
+    "replyWriter" : "김메롱"
+}
+
+send 했을때 success 떠야 한다. sql에서 select*from reply where 312 확인하면 있음
+
+post는 무조건 form 데이터를 써야한다.(input등등)
+근데 비동기에선 form데이터를 클라이언트프로그램이없어서 못쓴다.
+근데? 테스트는 할 수 있어야 하는거 아닌가? 데이터는 넘길 수 이써야지!
+=>api방식에서는  form 말고 클라이언트(너무 제각각이라 해석하기 어려움아이폰,안드로이드..등)에서 제이슨을(키) 자바필드에 매칭시켜서 넘긴다. 
+제이슨 { boardNo: 320} 이면 앞글자를 Set Bord No로 바꿔서 (320)으로 넘김 : 파싱 (문자열분해함수 subscript등을 통해 reply객체 생성....)
+이 복잡한걸 @RequestBody가 해결해준다.
+
+수정코드 작성 후 부메랑에 PUT + replyNo 확인해서 주소값 작성 후 테스트
+http://localhost:8182/api/v1/reply/20
+
+{
+    "replyText": "비동기 PUT 수정테스트"
+}
+sql에 쳐봐도 수정된거 확인 가능.
+
+삭제도 함수 생성 후 sql에서 확인
+DELETE 	http://localhost:8182/api/v1/reply/2
+GET http://localhost:8182/api/v1/reply/321 으로 부메랑에서 봐도 2번이 안나올거임
+
+
+
+
+===============================================
+
+
+##AJAX 를 위한 자바스크립트
+vscode 에서 자바스크립트학습 폴더 오픈 후 4번 폴더 생성
+
+프로미스개념 좀 어려움 원초적인 개념은 자바스크립트 책 사서 봐야함
+
+1. 파일
+코드 작성 후 라이브서버에서 버튼 눌러보면 오류 뜨고 Promise 문구 뜬다.
+크로스 오리진이라고 다른 서버간의 통신을 할 때 지키지 않아서 오류가 뜸 => 리플라이 컨트롤러에 @CrossOrigin 넣고 다시 해보기 (CORS??)
+새로고침하고 다시하면 오류 안뜨고 fulfilled라고 뜬다.
+promiseresult => prototype =>프로미스 객체가 제공하는 함수들이 죽 나온다. 
+
+백엔드는 api를 만드는것을, 프론트앤드는 api를 입맛에맞게 배치하고 사용하는걸 잘해야한다.
+
+
+##2. 영화 html
+yts.mx : 영화 관련 제공 사이트 하단에 푸터에서 api 들어가면 
