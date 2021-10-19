@@ -520,3 +520,22 @@ promiseresult => prototype =>프로미스 객체가 제공하는 함수들이 �
 
 ##2. 영화 html
 yts.mx : 영화 관련 제공 사이트 하단에 푸터에서 api 들어가면 
+
+등등 댓글작성 파일에 주석 참조 
+
+
+====================================================
+
+## 제이쿼리
+
+제이쿼리 최신 3.x 버전 받을거임 이것도 옛날꺼라^^...
+content.jsp에 제이쿼리 스크립트 작성한다.
+
+minified 누르면 코드 뜬다. include폴더에 static-head 복붙 integrity, crossorigin은 지워도 된다.
+$(function() {
+            
+        }); 속에 일반 자바스크립트도 다 먹힘.
+
+원본 글번호 받아오는 법 : ${article.boardNo}를 그냥 받아와도 된다.
+
+$() : document.queryselect의 줄임말
