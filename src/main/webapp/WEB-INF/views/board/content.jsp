@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
@@ -34,6 +33,7 @@
     </style>
 
     <%@ include file="../include/static-head.jsp" %>
+
 </head>
 
 <body>
@@ -53,7 +53,9 @@
                     <textarea rows="5" cols="30" disabled>${article.content}</textarea>
                 </p>
 
-                <a href="/board/list?pageNum=${page.pageNum}&amount=${page.amount}&type=${page.type}&keyword=${page.keyword}">글 목록보기</a>&nbsp;
+                <a
+                    href="/board/list?pageNum=${page.pageNum}&amount=${page.amount}&type=${page.type}&keyword=${page.keyword}">글
+                    목록보기</a>&nbsp;
 
                 <a href="/board/modify?boardNo=${article.boardNo}">글 수정하기</a>
 
@@ -119,6 +121,211 @@
             </div>
         </div> <!-- end replies row -->
     </div> <!-- end content container -->
+
+
+    <!-- 댓글 수정 모달 id에 집중 
+        댓글태그부분에 수정코드에 아이디 들어있는거 확인 가능.. href = '#replyModify : 아이디로 연결-->
+        <!-- 하얀 수정버튼 클릭: 수정하기 창 오픈 + 원래 글 내용을 창에 띄우고 data-replyid의 값과 함께 modal replyId에 넣어야한다. -->
+        
+        <!-- 1. 수정창 진입 이벤트, 2. 수정창 완료 이벤트 -->
+    <div class="modal fade bd-example-modal-lg" id="replyModifyModal">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header" style="background: #343A40; color: white;">
+                    <h4 class="modal-title">댓글 수정하기</h4>
+                    <button type="button" class="close text-white" data-bs-dismiss="modal">X</button>
+                </div>
+
+                <!-- Modal body -->
+                <!-- 수정 클릭시 input의 type에 value가 들어가야 하고 수정된 내용이 들어가야한다.. -->
+                <div class="modal-body">
+                    <div class="form-group">
+                        <input id="modReplyId" type="hidden">
+                        <label for="modReplyText" hidden>댓글내용</label>
+                        <textarea id="modReplyText" class="form-control" placeholder="수정할 댓글 내용을 입력하세요."
+                            rows="3"></textarea>
+                    </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button id="replyModBtn" type="button" class="btn btn-dark">수정</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">닫기</button>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    <!-- end replyModifyModal -->
+
+
+
+
+    <!-- 댓글 관련 스크립트 J Query -->
+
+    <script>
+        //댓글 처리 js 
+        //start jqery
+        $(function () {
+
+            // 원본 글 번호(서버에서 날아온다. : n번 게시물 내용, 숫자로 받고싶으면 +\$ { }\처럼 앞에 + 붙이기,여기서는 ㄴㄴ)
+            // jsp에서는 주석 속 달러 중괄호도 읽어버려서 오류 생기니까 위에처럼 표시하기ㅜㅜ
+            const boardNo = '${article.boardNo}';
+
+
+
+            //날짜 포맷 변환 함수
+            function formatDate(datetime) {
+                //문자열 날짜 데이터를 날짜객체로 변환
+                const dateObj = new Date(datetime);
+                // console.log(dateObj);
+                //날짜객체를 통해 각 날짜 정보 얻기
+                let year = dateObj.getFullYear();
+
+                //## 주의할 점: 1월이 0으로 설정되어 있어서 1을 더해야 한다.
+                let month = dateObj.getMonth() + 1;
+                let day = dateObj.getDate();
+                let hour = dateObj.getHours();
+                let minute = dateObj.getMinutes();
+
+                //오전, 오후 시간체크
+                let ampm = '';
+                if (hour < 12 && hour >= 6) {
+                    ampm = '오전';
+                } else if (hour >= 12 && hour < 21) {
+                    ampm = '오후';
+                    if (hour !== 12) {
+                        hour -= 12;
+                    }
+                } else if (hour >= 21 && hour <= 24) {
+                    ampm = '밤';
+                    hour -= 12;
+                } else {
+                    ampm = '새벽';
+                }
+
+                //숫자가 1자리일 경우 2자리로 변환
+                (month < 10) ? month = '0' + month: month;
+                (day < 10) ? day = '0' + day: day;
+                (hour < 10) ? hour = '0' + hour: hour;
+                (minute < 10) ? minute = '0' + minute: minute;
+
+                return year + "-" + month + "-" + day + " " + ampm + " " + hour + ":" + minute;
+
+            }
+
+
+
+            //댓글 태그 생성, 배치 함수
+            // for문 속에 reply.replyNo는 나중에 수정할 떄를 생각해서 미리 넣어둔 것
+            //주루룩 긴 거 리액트로 하면 편해서 요즘엔 리액트 잘 쓴다.
+            function makeReplyListDOM(replyList) {
+                let tag = '';
+
+                for (let reply of replyList) {
+                    tag += "<div id='replyContent' class='card-body' data-replyId='" + reply.replyNo + "'>" +
+                        "    <div class='row user-block'>" +
+                        "       <span class='col-md-3'>" +
+                        "         <b>" + reply.replyWriter + "</b>" +
+                        "       </span>" +
+                        "       <span class='offset-md-6 col-md-3 text-right'><b>" + formatDate(reply
+                            .replyDate) +
+                        "</b></span>" +
+                        "    </div><br>" +
+                        "    <div class='row'>" +
+                        "       <div class='col-md-6'>" + reply.replyText + "</div>" +
+                        "       <div class='offset-md-2 col-md-4 text-right'>" +
+                        "         <a id='replyModBtn' class='btn btn-sm btn-outline-dark' data-bs-toggle='modal' data-bs-target='#replyModifyModal'>수정</a>&nbsp;" +
+                        "         <a id='replyDelBtn' class='btn btn-sm btn-outline-dark' href='#'>삭제</a>" +
+                        "       </div>" +
+                        "    </div>" +
+                        " </div>";
+                }
+
+                //만든 태그를 댓글목록 안에 배치(제이쿼리)
+                //제이쿼리는 훨씬 편하다 주석: 바닐라코드, 하단: 제이쿼리
+                //document.querySelector('#replyData').innerHTML = tag;
+                $('#replyData').html(tag);
+
+            }
+
+
+            // 댓글 목록 비동기 요청 처리 함수
+            function getReplyList() {
+                //서버 내부 jsp여서 http 작성 안해도 된다. vscode 라이브는 바깥에서(5500번 포트) 접속이어서 주소가 그랬음.
+                fetch('/api/v1/reply/' + boardNo)
+                    .then(res => res.json())
+                    .then(replyList => {
+                        console.log(replyList);
+                        makeReplyListDOM(replyList);
+                    }); //아직까지 제이쿼리 쓴거 없다.
+            }
+
+            //페이지 진입시 댓글목록 불러오기
+            getReplyList();
+
+
+            //========================================================================================
+
+            //댓글 등록 처리 addEventListener = on()
+            $('#replyAddBtn').on('click', e => {
+
+                const reqInfo = {
+
+                    method: 'POST', //요청 방식
+                    headers: { //요청 헤더 내용
+                        'content-type': 'application/json'
+                    },
+                    //서버로 전송할 데이터 JSON
+                    body: JSON.stringify({
+                        boardNo: boardNo,
+                        replyText: $('#newReplyText').val(),
+                        replyWriter: $('#newReplyWriter').val()
+                    })
+                };
+                fetch('/api/v1/reply', reqInfo) //이 url로 reqInfo가 나간다
+                    .then(res => res.text())
+                    .then(msg => {
+                        if (msg === 'insertSuccess') {
+                            getReplyList();
+
+                            //비동기여서 값을 비워주어야 입력창에 텍스트가 사라진다 : val(속에 따옴표로 공백표현)
+                            $('#newReplyText').val('');
+                            $('#newReplyWriter').val('');
+                        } else {
+                            alert('댓글 등록에 실패했습니다.');
+                        }
+                    });
+            });
+
+            // ================================= 댓글 수정 이벤트 ====================================
+
+            //댓글 수정 창 진입 이벤트
+            const $modal = $('#replyModifyModal');
+            
+            //버블링 중요. 모든 댓글에 수정이 가능하게 걸려야 해서 감싸는 부모 div id=replyData에 걸어야한다.
+            //if(not e. target matches)? 와 같은게 #replyModBtn넣은거?
+            $('#replyData').on('click', '#replyModBtn', e => {
+                console.log('수정 창 버튼 클릭');
+
+                //기존 댓글 내용을 가져오기(부모노드로 올라가서 위에 형제 필요)
+                const originText = e.target.parentNode.previousElementSibling.textContent;
+                console.log(originText);
+
+                //해당 댓글번호 가져오기
+                const replyNo = e.target.parentNode.parentNode.parentNode.dataset.replyid;
+
+                //댓글내용 모달에 넣어놓기
+                $('#modReplyText').val(originText);
+                //input hidden에 댓글번호 넣어놓기
+                $('#modReplyId').val(replyNo);
+            });
+
+        });
+    </script>
 
 </body>
 

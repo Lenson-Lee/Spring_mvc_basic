@@ -10,3 +10,6 @@
 
 
 <link rel="stylesheet" href="/css/main.css">
+
+<!-- 제이쿼리 crossorigin, integrity는 지워도 된다. -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
