@@ -9,16 +9,16 @@
     <meta charset="UTF-8">
     <title>Insert title here</title>
     <style>
-        .pagination {
+        /* .pagination {
             width: fit-content;
             margin: 15px auto;
         }
 
         /* 부트스트랩 우선순위가 높아서 내 점수를 높여야 먹힌다. */
-        ul.pagination li.p-active a {
+        /* ul.pagination li.p-active a {
             background: rgb(104, 139, 204);
             color: #fff;
-        }
+        } */ 
 
         /* 
         .pagination>li {

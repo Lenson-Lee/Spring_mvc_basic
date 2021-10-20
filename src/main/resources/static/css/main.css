@@ -75,3 +75,14 @@ header .menu-box {
 .input-box textarea {
     padding: 10px;    
 }
+
+/* 페이지 list.jsp에 있던 css content에서도 쓰려고*/
+.pagination {
+    width: fit-content;
+    margin: 15px auto;
+}
+
+ul.pagination li.p-active a {
+    background: rgb(104, 139, 204);
+    color: #fff;
+}
