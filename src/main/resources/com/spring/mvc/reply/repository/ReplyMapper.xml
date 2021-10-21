@@ -35,6 +35,7 @@
         <result property="replyDate" column="reply_date"/>
     </resultMap>
     <!--  댓글 목록 조회  서브쿼리-->
+
     <select id="getList" resultMap="replyMap">
         <![CDATA[
         SELECT
